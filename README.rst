@@ -1,6 +1,10 @@
 JSON Web Tokens C++ lib
 #######################
 
+.. warning::
+
+    This library is a work in progress. It's not ready for production yet.
+
 This lib exposes a simple class to work with signed JSON Web Tokens (JWT).
 It had been developped by Mozilla while making a C++ implementation of
 BrowserID.

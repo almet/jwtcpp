@@ -33,7 +33,7 @@ extract information about the JSON Web Tokens.
 
 Here is an example application showing how you can use the library:
 
-.. code-block:: cpp
+::
 
     # include "jwtcpp.h"
     
@@ -59,7 +59,7 @@ Here is an example application showing how you can use the library:
 `jwtcpp` also provides a cli application able to generate and decode JWT. You can
 invoke it like this:
 
-.. code-block:: bash
+::
 
     $ jwtcpp --generate --key=path/to/key.crt --data="{'json data': true}"
     XXX the output here

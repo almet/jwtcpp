@@ -63,5 +63,5 @@ namespace jwtcpp{
 	 *
 	 * @return string the encoded and signed JSON Web Token.
 	 **/
-	string generate(string algorithm, string key, map<string, string> payload);
+	string generate(string algorithm, string key, map<string, string>* payloadMap);
 }

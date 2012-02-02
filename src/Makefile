@@ -12,9 +12,11 @@ CXXFLAGS += $(CFLAGS)
 
 all: $(TARGETS)
 
+jwtcpp: clean
+	g++ -o jwtcpp jwt.cpp utils.cpp -ljansson -lcryptopp -lpthread $(CXXFLAGS)
+
 tests: clean
-	g++ -o tests tests.cpp utils.cpp -ljansson -lcryptopp -lpthread -lunittest++ $(CXXFLAGS)
-	./tests
+	g++ -o tests jwt.cpp utils.cpp tests.cpp -ljansson -lcryptopp -lpthread -lunittest++ $(CXXFLAGS)
 
 clean: 
 	rm -f *.exe* *.o $(TARGETS) *.bak *~

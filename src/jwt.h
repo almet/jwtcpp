@@ -33,7 +33,8 @@ namespace jwtcpp{
 			 * @param string the signature
 			 * @param string the signed data
 			 **/
-			JWT(string algorithm, json_t* payload, string signature, string signed_data);
+			JWT(const string& algorithm, json_t* payload, const string& signature,
+				const string& signed_data);
 
 			/**
 			 * Check the current token against the given public key.
@@ -42,7 +43,7 @@ namespace jwtcpp{
 			 *
 			 * @return bool True if the signature is correct, false otherwise.
 			 **/
-			bool checkSignature(string keyData);
+			bool checkSignature(const string& key);
 	};
 
     /**
@@ -51,8 +52,9 @@ namespace jwtcpp{
 	 * @param string the text to parse (the encoded and signed JWT)
 	 *
 	 * @return *JWT a JWT object.
+	 * @throws ParsingError if an error occurs during the parsing
 	 **/
-	JWT* parse(string jwt);
+	JWT* parse(const string& jwt);
 
 	/**
 	 * Generates and sign a JWT from a map of <string, string> (dict).
@@ -63,5 +65,6 @@ namespace jwtcpp{
 	 *
 	 * @return string the encoded and signed JSON Web Token.
 	 **/
-	string generate(string algorithm, string key, map<string, string>* payloadMap);
+	string generate(const string& algorithm, const string& key,
+			        map<string, string>* payloadMap);
 }

@@ -1,6 +1,9 @@
 #include <iostream>
 #include <map>
 
+#include "keys.h"
+#include "exceptions.h"
+
 extern "C" {
 #include "jansson.h"
 }
@@ -43,7 +46,7 @@ namespace jwtcpp{
 			 *
 			 * @return bool True if the signature is correct, false otherwise.
 			 **/
-			bool checkSignature(const string& key);
+			bool checkSignature(KeyPair* key);
 	};
 
     /**
@@ -59,12 +62,26 @@ namespace jwtcpp{
 	/**
 	 * Generates and sign a JWT from a map of <string, string> (dict).
 	 *
+	 * This function is an alias for the other generate method, but which
+	 * transforms the map to a json object on the fly.
+	 *
 	 * @param string the name of the algorithm used to sign the token.
 	 * @param string the key that will be used to sign the token.
 	 * @param map<string, string> a map containing the payload.
 	 *
 	 * @return string the encoded and signed JSON Web Token.
 	 **/
-	string generate(const string& algorithm, const string& key,
-			        map<string, string>* payloadMap);
+	string generate(KeyPair* keypair, map<string, string>* payloadMap);
+
+	/**
+	 * Generates and sign a JWT from a map of <string, string> (dict).
+	 *
+	 * @param string the name of the algorithm used to sign the token.
+	 * @param string the key that will be used to sign the token.
+	 * @param json_t* the json object reference to the payload
+	 *
+	 * @return string the encoded and signed JSON Web Token.
+	 **/
+    string generate(KeyPair* keypair, json_t* jsonPayload);
+
 }

@@ -1,3 +1,5 @@
+#include <map>
+
 extern "C" {
 #include "jansson.h"
 }
@@ -48,4 +50,13 @@ namespace jwtcpp {
 	 * @return string the encoded value
 	 **/
 	string encodeJSONBytes(json_t* input);
+
+	/**
+	 * Converts a map<string,string> to a json object
+	 *
+	 * @param map<string, string> the map to convert
+	 *
+	 * @return json_t* the json object
+	 **/
+	json_t* map2json(map<string, string>* data);
 }

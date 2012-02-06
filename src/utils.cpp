@@ -51,4 +51,19 @@ string encodeJSONBytes(json_t* input){
     return encodeBase64((string) json_dumps(input, 0));
 }
 
+json_t* map2json(map<string, string>* data){
+	// loop on the payload map to create a json_object from it
+	json_t* jsonPayload = json_object();
+
+	if (data->size() > 0){
+		map<string, string>::iterator iter;
+
+		for(iter = data->begin(); iter != data->end(); iter++){
+			json_object_set(jsonPayload, (*iter).first.c_str(),
+							json_string((*iter).second.c_str()));
+		}
+
+	}
+	return jsonPayload;
+}
 }

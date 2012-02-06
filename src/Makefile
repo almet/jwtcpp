@@ -16,7 +16,7 @@ jwtcpp: clean
 	g++ -o jwtcpp jwt.cpp utils.cpp -ljansson -lcryptopp -lpthread $(CXXFLAGS)
 
 tests: clean
-	g++ -o tests jwt.cpp utils.cpp tests.cpp -ljansson -lcryptopp -lpthread -lunittest++ $(CXXFLAGS)
+	g++ -o tests jwt.cpp utils.cpp tests.cpp keys.cpp -ljansson -lcryptopp -lpthread -lunittest++ $(CXXFLAGS)
 
 clean: 
 	rm -f *.exe* *.o $(TARGETS) *.bak *~

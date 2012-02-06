@@ -2,14 +2,9 @@
 
 #include "jwt.h"
 #include "utils.h"
-#include "exceptions.h"
-
-#include "cryptopp/dsa.h"
-#include "cryptopp/osrng.h"
 
 using namespace std;
 using namespace jwtcpp;
-using namespace CryptoPP;
 
 namespace jwtcpp {
 
@@ -22,18 +17,9 @@ namespace jwtcpp {
         this->signed_data = signed_data;
     }
 
-    bool JWT::checkSignature(const string& key)
+    bool JWT::checkSignature(KeyPair* keypair)
     {
-        DSA::PublicKey publicKey;
-        publicKey.Load(StringStore(key).Ref());
-
-        DSA::Verifier verifier(publicKey);
-
-        SignatureVerificationFilter svf(verifier);
-        StringSource(this->signature +this->signed_data, true,
-                     new Redirector(svf));
-
-	    return svf.GetLastResult();
+        return keypair->verify(this->signed_data, this->signature);
     }
 
     JWT* parse(const string& jwt)
@@ -71,45 +57,24 @@ namespace jwtcpp {
         return obj;
     }
 
-	string generate(const string& algorithm, const string& key,
-                    map<string, string>* payloadMap)
+	string generate(KeyPair* keypair, map<string, string>* payloadMap)
+    {
+        json_t* jsonPayload = map2json(payloadMap);
+        string output = generate(keypair, jsonPayload);
+        free(jsonPayload);
+        return output;
+    }
+
+    string generate(KeyPair* keypair, json_t* jsonPayload)
     {
         // encode the algorithm in bytes
         json_t* jsonAlg = json_object();
-        json_object_set(jsonAlg, "alg", json_string(algorithm.c_str()));
+        json_object_set(jsonAlg, "alg", json_string(keypair->algorithm.c_str()));
         string alg = encodeJSONBytes(jsonAlg);
-
-        // loop on the payload map to create a json_object from it
-        json_t* jsonPayload = json_object();
-
-        if (payloadMap->size() > 0){
-            map<string, string>::iterator iter;
-
-            for(iter = payloadMap->begin(); iter != payloadMap->end(); iter++){
-                json_object_set(jsonPayload, (*iter).first.c_str(),
-                                json_string((*iter).second.c_str()));
-            }
-
-        }
 
         // encode the payload in bytes
         string payload = encodeJSONBytes(jsonPayload);
-
-        // get a random number generator
-        AutoSeededRandomPool rng;
-
-        // sign the data with the key and the algorithm name.
-        // XXX handle different algos
-        DSA::PrivateKey privateKey;
-        privateKey.Load(StringStore(key).Ref());
-
-        DSA::Signer signer(privateKey);
-
-        cout << alg + "." + payload << endl;
-
-        string signature;
-        StringSource(alg + "." + payload, true,
-                     new SignerFilter(rng, signer, new StringSink(signature)));
+        string signature = keypair->sign(alg + "." + payload);
 
         return alg + "." + payload + "." + signature;
     }

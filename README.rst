@@ -61,7 +61,7 @@ invoke it like this:
 
 ::
 
-    $ jwtcpp --generate --key=path/to/key.crt --data="{'json data': true}"
+    $ jwtcpp --generate --key=path/to/key.crt --algo=DSA --data="{'json data': true}"
     XXX the output here
 
     $ jwtcpp --extract | cat token.jwt

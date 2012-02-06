@@ -3,6 +3,7 @@
 
 #include "utils.h"
 #include "jwt.h"
+#include "keys.h"
 
 #include "cryptopp/dsa.h"
 #include "cryptopp/rsa.h"
@@ -56,23 +57,20 @@ TEST(JWT_generation_dsa)
 {
 	// generate the keys
 	AutoSeededRandomPool rnd;
+	DSAKeyPair* keypair;
 
-	DSA::PrivateKey privateKey;
-	privateKey.GenerateRandomWithKeySize(rnd, 1024);
-	string encodedPrivateKey;
-	privateKey.Save(StringSink(encodedPrivateKey).Ref());
+	cout << "yay" << endl;
 
-	DSA::PublicKey publicKey;
-	privateKey.MakePublicKey(publicKey);
-	string encodedPublicKey;
-	publicKey.Save(StringSink(encodedPublicKey).Ref());
+
+	keypair->privateKey->GenerateRandomWithKeySize(rnd, 1024);
+	keypair->privateKey->MakePublicKey(*keypair->publicKey);
 
 	// and generate some tokens
 	map<string, string> map; // empty map should work
-	string token = generate("DSA", encodedPrivateKey, &map);
+	string token = generate(keypair, &map);
 
 	JWT* parsedToken = parse(token);
-	CHECK_EQUAL(true, parsedToken->checkSignature(encodedPublicKey));
+	CHECK_EQUAL(true, parsedToken->checkSignature(keypair));
 }
 
 TEST(JWT_generation_rsa)

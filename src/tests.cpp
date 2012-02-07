@@ -51,51 +51,40 @@ TEST(EncodeJSONBytes)
 	json_error_t* errors;
 	json_t* json = json_loads("{\"key\":\"value\"}", 0, errors);
 	CHECK_EQUAL("eyJrZXkiOiAidmFsdWUifQ", encodeJSONBytes(json));
+
 }
 
 TEST(JWT_generation_dsa)
 {
 	// generate the keys
+    AutoSeededRandomPool rnd;
 	KeyPair* keypair = new DSAKeyPair();
-    keypair->generateRandomKeys();
+    keypair->generateRandomKeys(&rnd);
 
 	// and generate some tokens
-	map<string, string> map; // empty map should work
-	string token = generate(keypair, &map);
+	map<string, string> map1; // empty map should work
 
-	JWT* parsedToken = parse(token);
-	CHECK_EQUAL(true, parsedToken->checkSignature(keypair));
+	JWT* t1 = parse(generate(keypair, &map1));
+	CHECK_EQUAL(true, t1->checkSignature(keypair));
+
+
+	map<string, string> map2; // empty map should work
+
+    // We should also be able to deal with maps with real values in them
+    map2["brown"] = "foxes";
+    map2["red"] = "wine";
+
+	JWT* t2 = parse(generate(keypair, &map2));
+	CHECK_EQUAL(true, t2->checkSignature(keypair));
 }
 
-
-TEST(JWT_generation_rsa)
+TEST(Map2Json)
 {
-	// generate the keys
-	AutoSeededRandomPool rnd;
+    map<string, string> mymap;
+    mymap["foo"] = "bar";
+    mymap["baz"] = "baz?";
 
-	RSA::PrivateKey rsaPrivate;
-	rsaPrivate.GenerateRandomWithKeySize(rnd, 3072);
-
-	RSA::PublicKey rsaPublic(rsaPrivate);
-}
-
-TEST(JWT_Extraction)
-{
-	// We should be able to load a JSON Web Token. This means being able to
-	// extract the information from the token.
-}
-
-TEST(JWT_Signature)
-{
-	// We should also be able to check that the certificates bundled in the
-	// token are valid for it.
-}
-
-TEST(Load_Algorithm)
-{
-	// JWT handle a bunch of algorithms. We should be able to load the right
-	// one depending on some text.
-	// In case of a failure, we should throw an exception
+    json_t* jsonValue = map2json(&mymap);
 }
 
 int main(int argc, const char *argv[])

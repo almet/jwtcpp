@@ -1,4 +1,5 @@
 #include "cryptopp/base64.h"
+#include <iostream>
 
 extern "C" {
 #include "jansson.h"
@@ -30,7 +31,10 @@ string encodeBase64(string value){
     StringSource(value, true, new Base64Encoder(new StringSink(out))); 
 
     // remove the extra "=" appended by the base64 convertion
-    out.erase(out.find("="));
+	int pos = out.find("=");
+	if (pos != -1){
+		out.erase(pos);
+	}
     return out;
 }
 

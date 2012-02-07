@@ -24,7 +24,7 @@ class KeyPair
 		virtual void write(const string& path) = 0;
 		virtual void loadPublicKey(const string& path) = 0;
 		virtual void loadPrivateKey(const string& path) = 0;
-		virtual void generateRandomKeys() = 0;
+		virtual void generateRandomKeys(AutoSeededRandomPool* rnd) = 0;
 
 		void load(const string& path);
 };
@@ -42,6 +42,6 @@ class DSAKeyPair : public KeyPair
 		void loadPublicKey(const string& path);
 		void loadPrivateKey(const string& path);
 		void write(const string& path);
-		void generateRandomKeys();
+		void generateRandomKeys(AutoSeededRandomPool* rnd);
 };
 #endif

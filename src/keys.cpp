@@ -23,10 +23,9 @@ DSAKeyPair::DSAKeyPair(){
 }
 
 
-void DSAKeyPair::generateRandomKeys(){
-	AutoSeededRandomPool rnd;
-
-	this->privateKey->GenerateRandomWithKeySize(rnd, 1024);
+void DSAKeyPair::generateRandomKeys(AutoSeededRandomPool* rnd)
+{
+	this->privateKey->GenerateRandomWithKeySize(*rnd, 1024);
 	this->privateKey->MakePublicKey(*this->publicKey);
 
 }

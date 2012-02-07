@@ -8,16 +8,27 @@
 using namespace std;
 using namespace CryptoPP;
 
+// Generic methods //
+void KeyPair::load(const string& path){
+	this->loadPublicKey(path);
+	this->loadPrivateKey(path);
+}
+
 // DSA //
 
 DSAKeyPair::DSAKeyPair(){
 	this->algorithm = "DSA";
+    this->publicKey = new DSA::PublicKey();
+    this->privateKey = new DSA::PrivateKey();
 }
 
 
-void KeyPair::load(const string& path){
-	this->loadPublicKey(path);
-	this->loadPrivateKey(path);
+void DSAKeyPair::generateRandomKeys(){
+	AutoSeededRandomPool rnd;
+
+	this->privateKey->GenerateRandomWithKeySize(rnd, 1024);
+	this->privateKey->MakePublicKey(*this->publicKey);
+
 }
 
 void DSAKeyPair::loadPublicKey(const string& filename){

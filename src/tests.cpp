@@ -56,14 +56,8 @@ TEST(EncodeJSONBytes)
 TEST(JWT_generation_dsa)
 {
 	// generate the keys
-	AutoSeededRandomPool rnd;
-	DSAKeyPair* keypair;
-
-	cout << "yay" << endl;
-
-
-	keypair->privateKey->GenerateRandomWithKeySize(rnd, 1024);
-	keypair->privateKey->MakePublicKey(*keypair->publicKey);
+	KeyPair* keypair = new DSAKeyPair();
+    keypair->generateRandomKeys();
 
 	// and generate some tokens
 	map<string, string> map; // empty map should work
@@ -72,6 +66,7 @@ TEST(JWT_generation_dsa)
 	JWT* parsedToken = parse(token);
 	CHECK_EQUAL(true, parsedToken->checkSignature(keypair));
 }
+
 
 TEST(JWT_generation_rsa)
 {

@@ -42,6 +42,8 @@ namespace jwtcpp {
 
         // extracting the algorithm, payload, signature and data
         char* tok = strtok((char*) jwt.c_str(), ".");
+        if (!tok)
+            throw ParsingError();
         string raw_algorithm = (string) tok;
 
         tok = strtok(NULL, ".");
